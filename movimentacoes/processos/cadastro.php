@@ -1,7 +1,13 @@
 <?php
 
-require_once '../../controladores/produto.php';
+require_once '../../controladores/movimentacao.php';
 
-cadastrarProduto($_POST);
+$dados = normalizarPost($_POST);
 
-header('Location: /produtos'); // -> redireciona para o link especificado
+$resultado = cadastrarCompleto($dados);
+
+if($resultado === false){
+  echo "Não deu certo não";
+} else {
+  header('Location: /movimentacoes'); // -> redireciona para o link especificado
+}

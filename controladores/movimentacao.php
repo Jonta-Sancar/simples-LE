@@ -4,13 +4,47 @@ require_once __DIR__ . '/../conn.php';
 require_once __DIR__ . '/produto.php';
 require_once __DIR__ . '/../auxiliares.php';
 
+
+function cadastrarCompleto($dados){
+  $movimentacao = cadastrarMovimentacao($dados);
+
+  if(isset($movimentacao['id'])){
+    foreach($dados['produtos'] as $produto_e_quantidade){
+      $dados_mp = [
+        'id_movimentacao' => $movimentacao['id'],
+        'id_produto' => $produto_e_quantidade['id'],
+        'quantidade' => $produto_e_quantidade['quantidade']
+      ];
+
+      $resultado = cadastrarMovimentacaoProduto($dados_mp);
+      if(!$resultado){
+        $SQL = "DELETE FROM movimentacoes WHERE id = " . $movimentacao['id'];
+        executarQuery($SQL);
+        
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
 // C - Cadastro de movimentações
 function cadastrarMovimentacao($dados){
   $tipo      = $dados['tipo'];
 
   $SQL = "INSERT INTO movimentacoes (tipo) VALUES ('$tipo')";
 
-  return executarQuery($SQL);
+  $resultado = executarQuery($SQL);
+  if($resultado){
+    $SQL = "SELECT * FROM movimentacoes ORDER BY id DESC LIMIT 1"; // faz uma busca pelo último registro cadastrado
+
+    $resultado = executarQuery($SQL)[0];
+  }
+
+  return $resultado;
 }
 
 function cadastrarMovimentacaoProduto($dados){
@@ -19,11 +53,27 @@ function cadastrarMovimentacaoProduto($dados){
   $quantidade      = $dados['quantidade'];
 
   $produto = listarUmProduto($id_produto);
-  $valor_unitario  = $produto['valor_unitario'];
+  $valor_unitario  = $produto['preco'];
 
-  $SQL = "INSERT INTO movimentacoes (id_movimentacao, id_produto, quantidade, valor_unitario) VALUES ('$id_movimentacao', '$id_produto', '$quantidade', '$valor_unitario')";
+  $SQL = "INSERT INTO movimentacoes_produtos (id_movimentacao, id_produto, quantidade, valor_unitario) VALUES ('$id_movimentacao', '$id_produto', '$quantidade', '$valor_unitario')";
 
   return executarQuery($SQL);
+}
+
+function normalizarPost($dados_formulario){
+  $produtos = [];
+
+  foreach($dados_formulario['produtos'] as $i => $id){
+    $produtos[$i] = [
+      "id" => $id,
+      "quantidade" => $dados_formulario['quantidade'][$i]
+    ];
+  }
+
+  return [
+    'tipo' => $dados_formulario['tipo'],
+    'produtos' => $produtos
+  ];
 }
 
 // R - Listagem de produtos

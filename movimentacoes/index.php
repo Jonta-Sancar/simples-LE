@@ -28,7 +28,7 @@ $movimentacoes = listarMovimentacoes();
       flex-direction: column;
     }
 
-    input{
+    input, select{
       padding: 10px 15px;
       border-radius: 5px;
       border: 1px solid #000;
@@ -55,20 +55,14 @@ $movimentacoes = listarMovimentacoes();
   </style>
 </head>
 <body>
-  <form method="post" action="/movimentacoes/processos/cadastro.php">
+  <form method="post" action="/movimentacoes/cadastrar.php">
     <div>
-      <label for="nome">Nome:</label>
-      <input type="text" name="nome" id="nome" placeholder="Nome do produto">
-    </div>
-
-    <div>
-      <label for="preco">Preço:</label>
-      <input type="number" step="0.01" name="preco" id="preco" placeholder="Preço do produto">
-    </div>
-
-    <div>
-      <label for="descricao">Descrição:</label>
-      <input type="text" name="descricao" id="descricao" placeholder="Descrição do produto">
+      <label for="tipo">Tipo (estoque):</label>
+      <select name="tipo" id="tipo">
+        <option selected disabled>Selecione...</option>
+        <option value="entrada">Entrada</option>
+        <option value="saida">Saída</option>
+      </select>
     </div>
 
     <button type="submit">Cadastrar</button>
