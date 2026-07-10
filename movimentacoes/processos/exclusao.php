@@ -1,7 +1,7 @@
 <?php
 
-require_once '../../controladores/produto.php';
+require_once '../../controladores/movimentacao.php';
 
-excluirProduto($_GET['produto']);
+excluirMovimentacao($_GET['movimentacao']);
 
-header('Location: /produtos'); // -> redireciona para o link especificado
+header('Location: /movimentacoes'); // -> redireciona para o link especificado
