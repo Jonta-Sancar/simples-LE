@@ -1,13 +1,13 @@
 <?php
 
-require_once '../../controladores/produto.php';
+require_once '../../controladores/movimentacao.php';
 
-$id = $_POST['id'];
+$dados = normalizarPost($_POST);
 
-$dados = $_POST;
+$resultado = editarCompleto($_POST['id'], $dados);
 
-unset($dados['id']);
-
-$resultado = editarProduto($id, $dados);
-
-header('Location: /produtos'); // -> redireciona para o link especificado
+if($resultado === false){
+  echo "Não deu certo não";
+} else {
+  header('Location: /movimentacoes'); // -> redireciona para o link especificado
+}

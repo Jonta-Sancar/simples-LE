@@ -2,14 +2,14 @@
 
 require_once __DIR__ . "/../controladores/movimentacao.php";
 
-$produto = listarUmProduto($_GET['produto']);
+$movimentacao = listarUmaMovimentacao($_GET['movimentacao']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editar Produto</title>
+  <title>Editar Movimentação</title>
 
   <style>
     *{
@@ -28,38 +28,55 @@ $produto = listarUmProduto($_GET['produto']);
       flex-direction: column;
     }
 
-    input{
+    input, select{
       padding: 10px 15px;
       border-radius: 5px;
       border: 1px solid #000;
     }
 
+    div.btn{
+      display: flex;
+      justify-content: center;
+    }
+
     [type="submit"]{
       text-transform: uppercase;
       cursor: pointer;
+      padding: 15px 20px;
     }
   </style>
 </head>
 <body>
-  
-  <form method="post" action="/produtos/processos/edicao.php">
-    <input type="hidden" name="id" value="<?= $produto['id'] ?>">
-    <div>
-      <label for="nome">Nome:</label>
-      <input type="text" name="nome" id="nome" placeholder="Nome do produto" value="<?= $produto['nome'] ?>">
-    </div>
+
+
+  <form method="post" action="/movimentacoes/processos/edicao.php">
+    <input type="hidden" name="id" value="<?= $movimentacao['id'] ?>">
 
     <div>
-      <label for="preco">Preço:</label>
-      <input type="number" step="0.01" name="preco" id="preco" placeholder="Preço do produto" value="<?= $produto['preco'] ?>">
+      <label for="tipo">Tipo (estoque):</label>
+      <select name="tipo" id="tipo">
+        <option selected disabled>Selecione...</option>
+        <option value="entrada" <?= $movimentacao['tipo'] == 'entrada' ? 'selected' : '' ?>>Entrada</option>
+        <option value="saida" <?= $movimentacao['tipo'] == 'saida' ? 'selected' : '' ?>>Saída</option>
+      </select>
     </div>
 
-    <div>
-      <label for="descricao">Descrição:</label>
-      <input type="text" name="descricao" id="descricao" placeholder="Descrição do produto" value="<?= $produto['descricao'] ?>">
-    </div>
+    <?php
+      foreach($movimentacao['produtos'] as $produto){
+        ?>
+          <div>
+            <label for="quantidade_<?= $produto['id'] ?>"><?= $produto['nome'] ?>:</label>
+            <input type="hidden" name="produtos[]" value="<?= $produto['id'] ?>">
+            <input type="number" name="quantidade[]" id="quantidade_<?= $produto['id'] ?>" value="<?= $produto['quantidade'] ?>">
+          </div>
+        <?php
+      }
+    ?>
 
-    <button type="submit">Editar</button>
+    <div class="btn">
+      <button type="submit">Editar</button>
+    </div>
   </form>
+
 </body>
 </html>

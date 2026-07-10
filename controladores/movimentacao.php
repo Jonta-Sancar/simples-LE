@@ -20,7 +20,7 @@ function cadastrarCompleto($dados){
       if(!$resultado){
         $SQL = "DELETE FROM movimentacoes WHERE id = " . $movimentacao['id'];
         executarQuery($SQL);
-        
+
         return false;
       }
     }
@@ -129,15 +129,20 @@ function listarUmaMovimentacao($id){
 }
 
 // U - Edição de produtos
-// function editarProduto($id, $dados){
-//   $nome = $dados['nome'];
-//   $preco = $dados['preco'];
-//   $descricao = $dados['descricao'];
+function editarCompleto($id_movimentacao, $dados){
+  $SQL = "UPDATE movimentacoes SET tipo='" . $dados['tipo'] . "' WHERE id = $id_movimentacao";
+  
+  $resultado_movimentacao = executarQuery($SQL);
 
-//   $SQL = "UPDATE produtos SET nome='$nome', preco='$preco', descricao='$descricao' WHERE id = $id";
+  $resultado = true;
+  foreach($dados['produtos'] as $produto){
+    $SQL = "UPDATE movimentacoes_produtos SET quantidade='". $produto['quantidade'] ."' WHERE id_movimentacao = $id_movimentacao AND id_produto =" . $produto['id'];
 
-//   return executarQuery($SQL);
-// }
+    $resultado = $resultado ? executarQuery($SQL) : false;
+  }
+
+  return $resultado_movimentacao && $resultado;
+}
 
 // D - Exclusão de produtos
 function excluirMovimentacao($id){
