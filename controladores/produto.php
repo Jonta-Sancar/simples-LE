@@ -2,16 +2,15 @@
 
 require_once __DIR__ . '/../conn.php';
 require_once __DIR__ . '/../auxiliares.php';
+require_once __DIR__ . '/../database/produto.php';
 
 // C - Cadastro de produtos
-function cadastrarProduto($dados){
-  $nome      = $dados['nome'];
-  $preco     = $dados['preco'];
-  $descricao = $dados['descricao'];
-
-  $SQL = "INSERT INTO produtos (nome, preco, descricao) VALUES ('$nome', '$preco', '$descricao')";
-
-  return executarQuery($SQL);
+function __cadastrarProduto($dados){
+  if(cadastrarProduto($dados)){
+    header('Location: /produtos'); // -> redireciona para o link especificado
+  } else {
+    echo "deu errado";exit;
+  }
 }
 
 // R - Listagem de produtos
